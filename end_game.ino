@@ -12,6 +12,7 @@
 
 #define COUNTER 4
 
+#define DEBOUNCE_DELAY 50 
 
 const int buttonPins[COUNTER] = { RBtn, YBtn, GBtn, BBtn };
 const int ledPins[COUNTER] = { RLed, YLed, GLed, BLed };
@@ -24,5 +25,41 @@ void setup(){
 }
 
 void loop(){
+static unsigned long lastPressTimes[COUNTER] = {0}; 
+static unsigned long pressDurations[COUNTER] = {0};
+
+  for (int i = 0; i < COUNTER; i++) {
+    if (checkButtonPress(buttonPins[i], lastPressTimes[i], pressDurations[i])) {
+      
+      digitalWrite(ledPins[i], HIGH);
+    } else {
+      
+      digitalWrite(ledPins[i], LOW);
+    }
+  }
+
 
 }
+
+
+
+
+bool checkButtonPress(int buttonPin, unsigned long &lastPressTime, unsigned long &pressDuration) {
+  
+  bool buttonState = digitalRead(buttonPin);
+
+  if (buttonState == HIGH) {
+    unsigned long currentTime = millis();
+    if (currentTime - lastPressTime > DEBOUNCE_DELAY) {
+      pressDuration = currentTime - lastPressTime;
+      lastPressTime = currentTime;
+      return true; 
+    }
+  } else {
+    
+    lastPressTime = millis();
+    pressDuration = 0;
+  }
+  return false; 
+}
+
