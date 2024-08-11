@@ -91,3 +91,17 @@ void ShowLights() {
     tone(BZR, 500, 500); 
     startTime = millis(); 
 }
+
+int GetPressedBtn() {
+    for (int i = 0; i < NUM_OF_LEDS; i++) {
+        unsigned long currentTime = millis();
+        if (digitalRead(Btns[i]) == LOW) {
+            if ((currentTime - lastDebounceTime[i]) > debounceDelay) {
+                lastDebounceTime[i] = currentTime;
+                while (digitalRead(Btns[i]) == LOW); 
+                return i;
+            }
+        }
+    }
+    return -1;
+}
