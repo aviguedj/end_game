@@ -119,3 +119,16 @@ bool CheckIfCorrect() {
 
   return true;
 }
+
+void ResetGame() {
+    
+    digitalWrite(GLed, LOW);
+    digitalWrite(RLed, LOW);
+    
+    NumOfPressedIndexes = 0;
+    gameWon = false;
+
+    ChooseRandomLights();
+    ShowLights();
+}
+
