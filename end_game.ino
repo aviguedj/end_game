@@ -44,6 +44,47 @@ void setup() {
 }
 
 void loop(){
+ unsigned long currentTime = millis();
+
+    if (waitingForNewGame) {
+        if (GetPressedBtn() != -1) {
+            ResetGame();
+            waitingForNewGame = false;
+        }
+        return;
+    }
+
+    if (!gameWon && NumOfPressedIndexes < MAX_NUM_OF_LIGHTS) {
+        if (currentTime - startTime > TIME_LIMIT && NumOfPressedIndexes < MAX_NUM_OF_LIGHTS) {
+            digitalWrite(GLed, LOW);  
+            digitalWrite(RLed, HIGH); 
+            tone(BZR, 250, 500);       
+            waitingForNewGame = true;    
+        } else {
+            int pressedBtn = GetPressedBtn();
+            if (pressedBtn != -1) {
+                PressedIndexes[NumOfPressedIndexes++] = pressedBtn;
+                delay(debounceDelay);   
+                if (NumOfPressedIndexes == MAX_NUM_OF_LIGHTS) {
+                    if (CheckIfCorrect()) {
+                        
+                        digitalWrite(GLed, HIGH);
+                        digitalWrite(RLed, LOW);  
+                        tone(BZR, 1000, 500);   
+                        
+                        gameWon = true;
+                        waitingForNewGame = true;  
+                    } else {
+                        digitalWrite(GLed, LOW);  
+                        digitalWrite(RLed, HIGH);  
+                        tone(BZR, 250, 500);      
+                        waitingForNewGame = true;
+                    }
+                }
+            }
+        }
+    }
+}
 
 
 }
