@@ -77,3 +77,13 @@ void ChooseRandomLights() {
         ChosenIndexes[i] = random(0, NUM_OF_LEDS);
     }
 }
+
+void ShowLights() {
+
+    for (int i = 0; i < MAX_NUM_OF_LIGHTS; i++) {
+        digitalWrite(Leds[ChosenIndexes[i]], HIGH);
+    }
+    delay(500); 
+    for (int i = 0; i < MAX_NUM_OF_LIGHTS; i++) {
+        digitalWrite(Leds[ChosenIndexes[i]], LOW);
+    }
