@@ -105,3 +105,17 @@ int GetPressedBtn() {
     }
     return -1;
 }
+
+bool CheckIfCorrect() {
+  if (NumOfPressedIndexes != MAX_NUM_OF_LIGHTS) {
+    return false;
+  }
+
+  for (int i = 0; i < MAX_NUM_OF_LIGHTS; i++) {
+    if (PressedIndexes[i] != ChosenIndexes[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
