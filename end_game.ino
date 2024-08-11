@@ -31,17 +31,16 @@ unsigned long startTime = 0;
 const unsigned long TIME_LIMIT = 1000;
 bool waitingForNewGame = false;
 
-void setup(){
-  Serial.begin(9600);
-  pinMode( BZR , OUTPUT);
-  randomSeed(analogRead(A1));
-  
- LastPressTime=millis();
-for (int i = 0; i < COUNTER ; i++) {
-    pinMode(ledPins[i], OUTPUT);
-    pinMode(buttonPins[i], INPUT_PULLUP);
-  }
+void setup() {
+    pinMode(BZR, OUTPUT);
+    for (int i = 0; i < NUM_OF_LEDS; i++) {
+        pinMode(Leds[i], OUTPUT);
+        pinMode(Btns[i], INPUT_PULLUP);
+    }
+    randomSeed(analogRead(A1));
 
+    ChooseRandomLights();
+    ShowLights();
 }
 
 void loop(){
@@ -49,29 +48,12 @@ void loop(){
 
 }
 
-void waitToStart(){
-  CurrBtn=digitalRead(buttonPins);
-    if((CurrBtn == HIGH) && (LastBtn == LOW)&&(millis() - LastPressTime > 50)){
-      LastPressTime=millis();
-    }
-    LastBtn=CurrBtn;
-  }
 
 
-void sound(){
-  digitalWrite(BZR,HIGH);
-  delay(500);
-  digitalWrite(BZR,LOW);
-}
 
-void startGame(){
-for (int i = 0; i < COUNTER ; i++) {
-    pinMode(ledPins[i], OUTPUT);
-    pinMode(buttonPins[i], INPUT_PULLUP);
-  }
-  sound();
 
-}
+
+
 void ChooseRandomLights() {
     for (int i = 0; i < MAX_NUM_OF_LIGHTS; i++) {
         ChosenIndexes[i] = random(0, NUM_OF_LEDS);
