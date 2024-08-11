@@ -77,7 +77,6 @@ void ChooseRandomLights() {
         ChosenIndexes[i] = random(0, NUM_OF_LEDS);
     }
 }
-
 void ShowLights() {
 
     for (int i = 0; i < MAX_NUM_OF_LIGHTS; i++) {
@@ -87,3 +86,8 @@ void ShowLights() {
     for (int i = 0; i < MAX_NUM_OF_LIGHTS; i++) {
         digitalWrite(Leds[ChosenIndexes[i]], LOW);
     }
+    
+    delay(500); 
+    tone(BZR, 500, 500); 
+    startTime = millis(); 
+}
