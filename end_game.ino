@@ -12,55 +12,68 @@
 
 #define COUNTER 4
 
-#define DEBOUNCE_DELAY 50
+
 
 const int buttonPins[COUNTER] = { RBtn, YBtn, GBtn, BBtn };
 const int ledPins[COUNTER] = { RLed, YLed, GLed, BLed };
 const int tones[COUNTER] = { 1000, 1500, 2000, 2500 };
 
+#define MAX_NUM_OF_LIGHTS 3
+
+int ChosenIndexes[MAX_NUM_OF_LIGHTS];
+int PressedIndexes[MAX_NUM_OF_LIGHTS];
+
+int NumOfPressedIndexes = 0;
+bool gameWon = false;
+unsigned long lastDebounceTime[NUM_OF_LEDS] = {0};
+unsigned long debounceDelay = 150;
+unsigned long startTime = 0;
+const unsigned long TIME_LIMIT = 1000;
+bool waitingForNewGame = false;
+
 void setup(){
+  Serial.begin(9600);
   pinMode( BZR , OUTPUT);
   randomSeed(analogRead(A1));
   
+ LastPressTime=millis();
+for (int i = 0; i < COUNTER ; i++) {
+    pinMode(ledPins[i], OUTPUT);
+    pinMode(buttonPins[i], INPUT_PULLUP);
+  }
 
 }
 
 void loop(){
-static unsigned long lastPressTimes[COUNTER] = {0};
-  static unsigned long pressDurations[COUNTER] = {0};
 
-  for (int i = 0; i < COUNTER; i++) {
-    if (checkButtonPress(buttonPins[i], lastPressTimes[i], pressDurations[i])) {
-      digitalWrite(ledPins[i], HIGH);
-    } else {
-      digitalWrite(ledPins[i], LOW);
+
+}
+
+void waitToStart(){
+  CurrBtn=digitalRead(buttonPins);
+    if((CurrBtn == HIGH) && (LastBtn == LOW)&&(millis() - LastPressTime > 50)){
+      LastPressTime=millis();
     }
+    LastBtn=CurrBtn;
   }
 
 
+void sound(){
+  digitalWrite(BZR,HIGH);
+  delay(500);
+  digitalWrite(BZR,LOW);
 }
 
+void startGame(){
+for (int i = 0; i < COUNTER ; i++) {
+    pinMode(ledPins[i], OUTPUT);
+    pinMode(buttonPins[i], INPUT_PULLUP);
+  }
+  sound();
 
-
-
-
-bool checkButtonPress(int buttonPin, unsigned long &lastPressTime, unsigned long &pressDuration) {
-    static bool lastButtonState = LOW;
-    bool buttonState = digitalRead(buttonPin);
-
-    unsigned long currentTime = millis();
-    if (buttonState != lastButtonState) {
-        lastPressTime = currentTime;
-    }
-    if (buttonState == HIGH && (currentTime - lastPressTime) > DEBOUNCE_DELAY) {
-        pressDuration = currentTime - lastPressTime;
-        lastPressTime = currentTime;
-        lastButtonState = buttonState; 
-        return true;
-    } else if (buttonState == LOW) {
-        pressDuration = 0;
-        lastButtonState = buttonState; 
-    }
-    return false;
 }
-
+void ChooseRandomLights() {
+    for (int i = 0; i < MAX_NUM_OF_LIGHTS; i++) {
+        ChosenIndexes[i] = random(0, NUM_OF_LEDS);
+    }
+}
